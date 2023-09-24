@@ -1,13 +1,11 @@
 const UserService = require('../services/UserService');
-const contUsers = 0;
 
 module.exports = {
     getAllUsers: async (req,res)=> {
 
         let users = await UserService.getAllUsers();
-        let json = {users:[], total:contUsers};
+        let json = {users:[]};
         for(let i in users){
-            contUsers++;
             json.users.push({
                 id: users[i].id,
                 firstname: users[i].firstname,
@@ -26,6 +24,7 @@ module.exports = {
         if(user){
             json.user  = user;
         } else {
+            res.status(404);
             json.message = "User with id '" + id + "' not found"
         }
 
@@ -37,7 +36,7 @@ module.exports = {
         let firstname = req.body.firstname;
         let lastname = req.body.lastname;
         let age = req.body.age;
-
+        
         if(firstname && lastname && age){
             let newUser = await UserService.addNewUser(firstname, lastname, age);
             json.user = {
@@ -47,6 +46,7 @@ module.exports = {
                     age
             };
         }else{
+            res.status(422);
             json.error = 'You need all fields filled'
         }
 
@@ -71,6 +71,7 @@ module.exports = {
                 age
             };
         }else{
+            res.status(422);
             json.error = 'You need all fields filled'
         }
 
@@ -88,10 +89,16 @@ module.exports = {
             await UserService.deleteUser(id);
             json.message = "User with id '" + id + "' were deleted"
         } else {
+            res.status(404);
             json.message = "User with id '" + id + "' doesnt exist"
             
         }
 
+        res.json(json);
+    },
+    getHealthStatus: async (req,res)=> {
+        let json = {};
+        json.status = "OK"
         res.json(json);
     }
 };

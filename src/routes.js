@@ -3,6 +3,7 @@ const router = express.Router();
 
 const userController = require('./controllers/UserController');
 
+router.get('/health', userController.getHealthStatus);
 router.get('/users', userController.getAllUsers);
 router.get('/users/:id', userController.getSingleUser);
 router.post('/users/add', userController.addNewUser);
